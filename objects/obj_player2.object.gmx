@@ -35,6 +35,8 @@ min_speed = 10;
 max_speed = 40;
 can_shoot = true;
 player2_alive = true;
+pad_number = undefined;
+show_debug_message("Pad Number" + string(pad_number));
 </string>
           </argument>
         </arguments>
@@ -109,43 +111,48 @@ key_left = keyboard_check(ord("J"));
 key_right = keyboard_check(ord("L"));
 key_fire = keyboard_check_pressed(vk_rshift);
 
+//Gamepad play
+gp_angle = gamepad_axis_value(pad_number, gp_axislv);
+gp_speed = gamepad_axis_value(pad_number, gp_axislh);
+gp_fire = gamepad_button_check_pressed(pad_number, gp_face1);
+
 if angle != max_angle
     {
-        if key_up
+        if key_up || -gp_angle
         {
             angle += 1;
         }
     }
 if angle != min_angle
     {
-        if key_down
+        if key_down || gp_angle
         {
             angle -= 1;
         }
     }
 if bullet_speed != min_speed
     {   
-        if key_left
+        if key_left || gp_speed
         {
             bullet_speed -= 1;
         }
     }
 if bullet_speed != max_speed
     {
-        if key_right
+        if key_right || -gp_speed
         {
             bullet_speed += 1;
         }
     }
 
-if key_fire
+if can_shoot = true
     {
-        if can_shoot = true
-            {
-                instance_create(x, y, obj_bullet2);
-                can_shoot = false;
-                alarm[0] = shot_delay;
-            }
+        if key_fire || gp_fire
+        {
+            instance_create(x, y, obj_bullet2);
+            can_shoot = false;
+            alarm[0] = shot_delay;
+        }
     }
 
 if place_meeting(x, y, obj_bullet)
